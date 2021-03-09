@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { useReducer, useEffect } from 'react'
+import people from './data'
+import Main from './components/main/main'
+import reducer from './reducer'
+import {InView} from 'react-intersection-observer'
 
 function App() {
+  let [newPeople, dispatch] = useReducer(reducer)
+
+  useEffect(()=>{
+    dispatch({type:'INIT', payload:people})
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>
+    { newPeople ? 
+      <>
+        <Main people={newPeople}/>
+        <InView onChange={(inView)=>inView ? dispatch({type:'LOADMORE', payload:people}) : null}></InView>
+      </>  
+        : null }
+    
+   </div>
   );
 }
 
